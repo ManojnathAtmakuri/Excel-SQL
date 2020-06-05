@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<link rel="stylesheet" href="style.css">
+    <title>Library Wifi Stats!</title>
+  </head>
+  <body>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	
+	<nav class="navbar navbar-expand-sm navbar-light bg-light">
+		<a class="navbar-brand" href="index1.html"><b> Library Stats </b></a>
+		
+		
+		
+		<form class="form-inline ml-auto" id="formitem" onsubmit = "return false">
+			
+				
+			<label id ="dropname"> <b> Select Floor </b> </label>
+			  <div class="dropdown" id="divdrop">
+			  <!-- <label> Select Floor</label> -->
+			  <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				ALL
+			  </button>
+			  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			    <a class="dropdown-item" href="#" class="active">ALL</a>
+				<a class="dropdown-item" href="#">1</a>
+				<a class="dropdown-item" href="#">2</a>
+				<a class="dropdown-item" href="#">3</a>
+				<a class="dropdown-item" href="#">4</a>
+				<a class="dropdown-item" href="#">5</a>
+				<a class="dropdown-item" href="#">6</a>
+				<!--<a class="dropdown-item" href="#">7</a> -->
+			  </div>
+			</div>
+			
+			 <b>START </b> <input type="date" class="form-control" id="startdate">
+			 <b>END </b> <input type="date" class="form-control" id="enddate">
+			 <button type="submit" class="btn btn-outline-primary" onclick="changeRange()" id="stylesubmit"> Submit </button>
+		</form>
+	</nav>
+	<br/>
+	<table id="maintable" class="table table-expand-sm table-striped">
+		<thead class="thead-dark">
+			<tr>
+				<th scope="col"> client username </th>
+				<th scope="col"> client ip address </th>
+				<th scope="col"> client mac address </th>
+				<th scope="col"> association time </th>
+				<th scope="col"> vendor </th>
+				<th scope="col"> ap name </th>
+				<th scope="col"> device name </th>
+				<th scope="col"> map location </th>
+				<th scope="col"> ssid </th>
+				<th scope="col"> profile </th>
+				<th scope="col"> vlanid </th>
+				<th scope="col"> protocol </th>
+				<th scope="col"> session duration </th>
+				<th scope="col"> policy type </th>
+				<th scope="col"> avg session throughput</th>
+			</tr>
+		</thead>
+	</table>
+	
+	<script type="text/javascript">
+	
+	
+	 var dropitem = "0";
+	 $(function(){
+
+    $(".dropdown-menu a.dropdown-item").click(function(){
+
+      $(".btn:first-child").text($(this).text());
+	  dropitem = ($(this).text());
+	  displayData(response,dropitem);
+	  
+
+   });
+
+});
+	
+	var startDate = 0;
+	var endDate = 0;
+	var response;
+	/*function orderFloor()
+	{
+		var x = document.getElementById();
+		$.ajax({ 
+           url: "http://localhost/upload/index1request.php",
+           type: "GET",
+		   data: {x},
+		   crossDomain: true,
+           success: function(output){
+					    response = JSON.parse(output);
+						displayData(response);
+                     }              
+				   });
+			
+	} */
+	function clearRows()
+	{
+	var table= document.getElementById("maintable");
+	for(var i = 1;i<table.rows.length;){
+            table.deleteRow(i);
+        }
+
+	}
+	
+	function changeRange()
+	{
+			if(document.getElementById("startdate").value == 0||document.getElementById("enddate").value == 0)
+			 {
+				alert("please select the dates");
+				return;
+			 }
+			 else{
+				//alert("showing data from "+x+" to "+y);
+			 }
+		startDate = new Date(document.getElementById("startdate").value);
+		endDate = new Date(document.getElementById("enddate").value);
+		//console.log(startDate);
+		//console.log(endDate);
+		
+		if(startDate == 0||endDate == 0)
+			 {
+				alert("please select the dates");
+			 }
+			 else{
+				//alert("showing data from "+x+" to "+y);
+			 }
+		displayData(response,dropitem);
+	}
+	function displayData(response,dropitem)
+	{
+		clearRows();
+		var ml;
+		if(dropitem == "ALL")
+			dropitem =0;
+		if(dropitem == "2")
+			ml = "University of Dayton > Roesch Library > Second Floor";
+		else if(dropitem == "1")
+			ml = "University of Dayton > Roesch Library > First Floor";
+		else if(dropitem == "3")
+			ml = "University of Dayton > Roesch Library > Third Floor";
+		else if(dropitem == "4")
+			ml = "University of Dayton > Roesch Library > Fourth Floor";
+		else if(dropitem == "5")
+			ml = "University of Dayton > Roesch Library > Fifth Floor";
+		else if(dropitem == "6")
+			ml = "University of Dayton > Roesch Library > Sixth Floor";
+			
+			
+		var date = [];
+		if(startDate == 0 && endDate == 0)
+		{
+		startDate = new Date("01-01-2016");
+		endDate = new Date("01-01-2019");
+
+		}
+		for(var i=0; i<response.length; i++)
+		{
+			date[i] = response[i].association_time;
+			var newdate = new Date(date[i]);
+			var formattedDate = (newdate.getMonth()+1)+"-"+newdate.getDate()+"-"+newdate.getFullYear();
+			date[i] = new Date(formattedDate);		
+		}
+		//console.log("it came in to fun");
+		var table = document.getElementById('maintable');
+		console.log(startDate);
+		console.log(endDate);
+		for(var i=0; i<response.length; i++)
+		{
+			if(date[i] >= startDate && date[i] <= endDate)
+			{
+				if(dropitem == 0)
+				{
+					var row = table.insertRow();
+					var col0 = row.insertCell(0);
+					var col1 = row.insertCell(1);
+					var col2 = row.insertCell(2);
+					var col3 = row.insertCell(3);
+					var col4 = row.insertCell(4);
+					var col5 = row.insertCell(5);
+					var col6 = row.insertCell(6);
+					var col7 = row.insertCell(7);
+					var col8 = row.insertCell(8);
+					var col9 = row.insertCell(9);
+					var col10 = row.insertCell(10);
+					var col11 = row.insertCell(11);
+					var col12 = row.insertCell(12);
+					var col13 = row.insertCell(13);
+					var col14 = row.insertCell(14);
+					
+					col0.appendChild(document.createTextNode(response[i].client_username));
+					col1.appendChild(document.createTextNode(response[i].client_ip_address));
+					col2.appendChild(document.createTextNode(response[i].client_mac_address));
+					col3.appendChild(document.createTextNode(response[i].association_time));
+					col4.appendChild(document.createTextNode(response[i].vendor));
+					col5.appendChild(document.createTextNode(response[i].ap_name));
+					col6.appendChild(document.createTextNode(response[i].device_name));
+					col7.appendChild(document.createTextNode(response[i].map_location));
+					col8.appendChild(document.createTextNode(response[i].ssid));
+					col9.appendChild(document.createTextNode(response[i].profile));
+					col10.appendChild(document.createTextNode(response[i].vlan_id));
+					col11.appendChild(document.createTextNode(response[i].protocol));
+					col12.appendChild(document.createTextNode(response[i].session_duration));
+					col13.appendChild(document.createTextNode(response[i].policy_type));
+					col14.appendChild(document.createTextNode(response[i].avg_session_throughput)); 
+				}
+					
+				else
+				{
+				if(response[i].map_location == ml)
+				{
+					//console.log("inside date loop");
+					var row = table.insertRow();
+					var col0 = row.insertCell(0);
+					var col1 = row.insertCell(1);
+					var col2 = row.insertCell(2);
+					var col3 = row.insertCell(3);
+					var col4 = row.insertCell(4);
+					var col5 = row.insertCell(5);
+					var col6 = row.insertCell(6);
+					var col7 = row.insertCell(7);
+					var col8 = row.insertCell(8);
+					var col9 = row.insertCell(9);
+					var col10 = row.insertCell(10);
+					var col11 = row.insertCell(11);
+					var col12 = row.insertCell(12);
+					var col13 = row.insertCell(13);
+					var col14 = row.insertCell(14);
+					
+					col0.appendChild(document.createTextNode(response[i].client_username));
+					col1.appendChild(document.createTextNode(response[i].client_ip_address));
+					col2.appendChild(document.createTextNode(response[i].client_mac_address));
+					col3.appendChild(document.createTextNode(response[i].association_time));
+					col4.appendChild(document.createTextNode(response[i].vendor));
+					col5.appendChild(document.createTextNode(response[i].ap_name));
+					col6.appendChild(document.createTextNode(response[i].device_name));
+					col7.appendChild(document.createTextNode(response[i].map_location));
+					col8.appendChild(document.createTextNode(response[i].ssid));
+					col9.appendChild(document.createTextNode(response[i].profile));
+					col10.appendChild(document.createTextNode(response[i].vlan_id));
+					col11.appendChild(document.createTextNode(response[i].protocol));
+					col12.appendChild(document.createTextNode(response[i].session_duration));
+					col13.appendChild(document.createTextNode(response[i].policy_type));
+					col14.appendChild(document.createTextNode(response[i].avg_session_throughput)); 
+			}
+			}
+			}
+			else
+			{console.log("failed");}	
+		}
+		if(table.rows.length == 1)
+				alert("No Records");
+		
+	}
+	function callServer()
+	{
+		$.ajax({ 
+            url: "http://localhost/upload/index1request.php",
+            type: "GET",
+			crossDomain: true,
+            success: function(output){
+					    response = JSON.parse(output);
+					//console.log(response);
+						displayData(response,dropitem);
+                     }              
+				   });
+	}
+	callServer();
+
+	</script>
+	
+  </body>
+</html>
